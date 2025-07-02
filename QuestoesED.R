@@ -58,3 +58,20 @@ print(nova_lista)
 # Questão 8  --------------------------------------------------------------
 umidade <- seq(from = 0.4, to = 1, by = 0.1) # O mais correto, funciona como a sintaxe de um laço 
 
+
+
+# Questão 9 ---------------------------------------------------------------
+
+matriz3 <- matrix(c(1:1000),nrow = 100, ncol = 10)
+
+# Criando os nomes das linhas
+nomes_linhas <- paste0("Linha ", 1:100)
+
+# Atribuindo os nomes à matriz
+rownames(matriz3) <- nomes_linhas
+
+# Criando os nomes das colunas
+nomes_colunas <- paste0("Coluna ", 1:10)
+
+# Atribuindo os nomes à matriz
+colnames(matriz3) <- nomes_colunas
