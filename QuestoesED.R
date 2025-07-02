@@ -22,9 +22,6 @@ subset(data_frame_cidades, cidades=="Manaus")$temperatura |> mean()
 subset(data_frame_cidades, cidades=="Manaus")$temperatura |> sd()
 subset(data_frame_cidades, cidades=="Manaus")$temperatura |> summary()
 
-
-
-
 # Questão 5  --------------------------------------------------------------
 
 # Crie uma matriz 3× 5 contendo todos os números consecutivos entre 16 e 30, organize por colunas.
@@ -35,3 +32,29 @@ print(matriz)
 
 # Usando o Pipe
 seq(16:30)|> matrix(nrow = 3,ncol = 5)
+
+
+# Questão 6  --------------------------------------------------------------
+require("dataset")
+data(CO2)
+datasets::CO2
+?CO2
+
+
+# Questão 7  --------------------------------------------------------------
+# Crie duas matrizes 2X2. Coloque uma matriz abaixo da outra. Use o comando rbind(). 
+# Coloque essa matriz e a matriz criada na questão 5 em uma lista.
+
+matriz1 <- matrix(c(1,2,3,4),nrow = 2, ncol = 2)
+matriz2 <- matrix(c(5,6,7,8),nrow = 2, ncol=2)
+
+matriz_combinada <- rbind(matriz1, matriz2)
+print(matriz_combinada)
+
+nova_lista <- list(matriz_combinada,matriz)
+print(nova_lista)
+
+
+# Questão 8  --------------------------------------------------------------
+umidade <- seq(from = 0.4, to = 1, by = 0.1) # O mais correto, funciona como a sintaxe de um laço 
+
