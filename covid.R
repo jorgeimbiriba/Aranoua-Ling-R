@@ -1,4 +1,5 @@
 require(ggplot2)
+require(read)
 
 dados_brutos = readxl::read_xlsx(
   "Jorge - Ling R/Aranoua-Ling-R/dados/Dados_Livro_Estatistica_e_CD/covid2.xlsx",
@@ -18,3 +19,5 @@ dados = dados_brutos |>
     semana = lubridate::week(dia),
     letalidade = (obitos/casos*100))|>
   dplyr::relocate(dia,ano,mes.,diasemana,obitos,casos)
+
+boxplot(dados$obitos~dados$semana)
