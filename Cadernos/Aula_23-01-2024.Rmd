@@ -1,0 +1,426 @@
+---
+title: |
+  <center> Universidade Federal do Amazonas </center>
+  <center> Departamento de Estatística </center>
+subtitle: |
+  <center> 23/01/2024
+  <center> Versão 1.0 </center>
+  <center> Curso: Introdução à Ciência de Dados </center>
+  <center> Professor: Leonardo Nascimento </center>
+output:
+  html_document:
+    toc: true
+    toc_depth: 4
+    number_sections: true
+    toc_float: true
+---
+
+<!-- ```{r, echo=FALSE} -->
+
+<!-- htmltools::img(src = knitr::image_uri("C:/Users/Leonardo_Nascimento/Documents/GitHub/Introducao_Ciencias_de_Dados/Cadernos/Figuras/DE.jpg"), -->
+
+<!--                alt = 'logo', -->
+
+<!--                 width = 180, height = 180, -->
+
+<!--                style = 'position:absolute; top:10px; right:400px; padding:10px;') -->
+
+<!-- ``` -->
+
+<!-- ```{r, echo=FALSE} -->
+
+<!-- htmltools::img(src = knitr::image_uri("C:/Users/Leonardo_Nascimento/Documents/GitHub/Introducao_Ciencias_de_Dados/Cadernos/Figuras/ufam.png"), -->
+
+<!--                alt = 'logo', -->
+
+<!--                width = 180, height = 180, -->
+
+<!--                style = 'position:absolute; top:10px; left:400px; padding:10px; "margin: -100px;') -->
+
+<!-- ``` -->
+
+<!-- ```{css, echo=FALSE} -->
+
+<!-- .watch-out { -->
+
+<!--   border: 3px solid gray; -->
+
+<!--   font-weight: bold; -->
+
+<!-- } -->
+
+<!-- ``` -->
+
+```{r setup, include = FALSE}
+
+knitr::opts_chunk$set(
+ 
+  collapse = TRUE,
+
+  comment  = "#>",
+
+  class.source = "watch-out",
+
+  fig.height = 3,
+
+  fig.width = 3,
+
+  fig.align = "center"
+
+)
+
+require(tidyr)
+require(dplyr)
+temperatura_simulada = readRDS(file = "../dados/temperatura_simulada.rds")
+
+```
+
+# Tidyverse
+
+-   O **`tidyverse`** é um conjunto integrado de pacotes R desenvolvidos para facilitar a manipulação, visualização e análise de dados de forma consistente e eficiente.
+
+-   O **`tidyverse`** é composto por vários pacotes, sendo os principais:
+
+    1.  **`ggplot2`:** Um pacote poderoso para criação de gráficos baseados na gramática de gráficos. Ele permite criar visualizações complexas e esteticamente agradáveis com uma sintaxe declarativa.
+
+    2.  **`dplyr`:** Oferece funções para manipulação eficiente de dados, facilitando a filtragem, seleção, agrupamento, ordenação e resumo de conjuntos de dados.
+
+    3.  **`tidyr`:** Fornecer ferramentas para manipulação de dados para torná-los "tidy". Isso inclui funções para espalhar (spread) e juntar (gather) dados, entre outras operações de reformatar.
+
+    4.  **`tibble`:** Introduz o conceito de tibble, uma versão moderna de data frames, mais eficiente e fácil de usar, seguindo os princípios de dados "tidy".
+
+    5.  **`readr`:** Oferece funções rápidas e eficientes para ler dados retos em R. Ele é projetado para ser mais rápido que as funções base do R, como **`read.csv`**.
+
+    6.  **`purrr`:** Facilita a aplicação de funções em listas e vetores, proporcionando uma abordagem mais consistente e funcional para operações em dados.
+
+    7.  **`stringr`:** Fornece funções para manipulação de strings de uma maneira mais intuitiva e consistente do que as funções base do R.
+
+    8.  **`forcats`:** Especializado na manipulação de fatores, permitindo ajustar facilmente os níveis e rótulos dos fatores.
+
+-   Para carregar todos esses pacotes utilize `library(tidyverse)` 
+
+![](Figuras/ciclo_cd_2.png){width="584"}
+
+# Tibbles
+
+Os tibbles são uma estrutura de dados introduzida pelo pacote **`tibble`**. Eles são uma versão aprimorada dos data frames padrão do R e são projetados para serem mais intuitivos e eficientes
+
+## Criando Tibbles
+
+```{r}
+library(tibble)
+
+# Criar um tibble
+exemplo_tibble <- tibble::tibble(
+  Nome = c("Alice", "Bob", "Charlie"),
+  Idade = c(25, 30, 22),
+  Salario = c(50000, 60000, 45000)
+)
+
+exemplo_tibble
+```
+
+-   Covertendo um Data frame para Tible
+
+```{r}
+(df <- data.frame(
+  Nome = c("Alice", "Bob", "Charlie"),
+  Idade = c(25, 30, 22),
+  Salario = c(50000, 60000, 45000)
+))
+
+(df.tibble <- as_tibble(df))
+```
+
+```{r}
+# Acessar uma coluna específica
+nomes <- exemplo_tibble[,1]
+
+# Ou usando a notação $ diretamente
+nomes <- exemplo_tibble$Nome
+
+# Acessar várias colunas
+subset_tibble <- exemplo_tibble[, c("Nome", "Idade")]
+
+# Acessar uma linha específica
+linha1 <- exemplo_tibble[1, ]
+
+# Acessar um valor específico
+valor <- exemplo_tibble$Idade[2]
+
+```
+
+## Algumas Manipulações
+
+-    Criar uma coluna a partir de uma função de colunas anteriores
+
+```{r}
+tibble::tibble(
+  x = rnorm(6,180,3),
+  y = 1.75+1*x
+)
+```
+
+-   `add_row()` e `add_column()`: para adicionar linhas e colunas a uma *tibble*;
+
+-   `rowid_to_column()`: cria uma coluna com um `id` numérico e sequencial para as linhas, começando de `1`
+
+-   `has_rownames()`: verifica se um *data frame* possui linhas nomeadas.
+
+-   `remove_rownames()`: remove o nome das linhas de um *data frame*.
+
+-   `rownames_to_column()`: transforma o nome das linhas em uma coluna.
+
+-   `column_to_rownames()`: transforma uma coluna em nomes das linhas.
+
+# *Tidy data*
+
+-   Dados "tidy" referem-se a conjuntos de dados organizados de maneira estruturada e consistente, facilitando a análise e visualização
+
+-   Um conjunto de dados é organizado dependendo de como as linhas, colunas e tabelas são combinadas com observações, variáveis ​​e tipos.
+
+-   Em Tidy data :
+
+    1.  Cada variável é uma coluna; cada coluna é uma variável.
+
+    2.  Cada observação é uma linha; cada linha é uma observação.
+
+    3.  Cada valor é uma célula; cada célula é um valor único.
+
+-   Considere esses dois exemplos de organização dos dados. Qual deles está no formato Tidy data
+
+```{r echo=FALSE}
+temperatura_simulada
+```
+
+```{r,echo=F}
+temp_longer  = tidyr::pivot_longer(
+    temperatura_simulada,
+    cols = !Cidade,# selecionar as colunas diferente de Cidade
+    names_to = "Datas", # as colunas selecionadas serão os valores da variável Data
+    values_to = "Valores" # As observações nas colunas selecionadas serão as observações da variável Valores
+  )
+temp_longer
+```
+
+-   Quando os dados são organizados dessa maneira (Tidy data), torna-se mais fácil realizar análises, manipulações e visualizações usando ferramentas como R e pacotes como **`tidyverse`**, que inclui pacotes como **`dplyr`** e **`ggplot2`**.
+
+# Pivotagem das bases de dados
+
+-   Considere a base de dados temperatura a seguir:
+
+```{r echo=FALSE}
+temperatura_simulada
+```
+
+-   Note que a base de dados é formada por 3 linhas e 4 colunas.
+
+-   Nesse caso, os dados estão armazenados no formato "largo" (*wide*) - em que as características ou respostas dos sujeitos (Cidades) são colocadas em apenas uma linha.
+
+-   Esse é um exemplo de dados "largo" (*wide*) que não adere aos padrões de dados "tidy", pois os cabeçalhos das colunas (`10/01/2024...`) não representam, de fato, "variáveis" - eles representam *valores* de uma varíavel, nesse caso seria o dia em que a tempertura foi observada.
+
+-   Essa variável será denominada por `Data` .
+
+-   No contexto de análise de dados, é altamente recomendado colocar os dados nos padrões de dados "tidy".
+
+-   Para isso, podemos utilizar a função `tidyr::pivot_longer()` para transformar a base de dados em um formato mais longo, ou seja ,mais linhas que colunas.
+
+```{r}
+(
+  temp_longer  = tidyr::pivot_longer(
+    temperatura_simulada,
+    cols = !Cidade,# selecionar as colunas diferente de Cidade
+    names_to = "Datas", # as colunas selecionadas serão os valores da variável Data
+    values_to = "Valores" # As observações nas colunas selecionadas serão as observações da variável Valores
+  )
+)
+
+```
+
+-   Para voltar para o formato wide, podemos utilizar a função `tidyr::pivot_wider()`
+
+```{r}
+# Forma 1
+(
+  temp_wider = tidyr::pivot_wider(
+    temp_longer,
+    id_cols = Cidade, #coluna que identifica cada observação
+    names_from = "Datas", # nome da coluna
+    values_from = "Valores" # valores de cada coluna
+  )
+)
+
+# Forma 2
+(
+  temp_wider = tidyr::pivot_wider(
+    temp_longer,
+    id_cols = Datas, #coluna que identifica cada observação
+    names_from = "Cidade", # nome da coluna
+    values_from = "Valores" # valores de cada coluna
+  )
+)
+
+
+
+
+```
+
+# Pacote `dplyr`
+
+-   dplyr é uma gramática de manipulação de dados, fornecendo um conjunto consistente de funções que ajudam a resolver os desafios mais comuns de manipulação de dados. As principais funções do [dplyr](https://dplyr.tidyverse.org/) são:
+
+    -   [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)adiciona novas variáveis ​​que são funções de variáveis ​​existentes.
+
+    -   [`select()`](https://dplyr.tidyverse.org/reference/select.html)escolhe variáveis ​​com base em seus nomes.
+
+    -   [`filter()`](https://dplyr.tidyverse.org/reference/filter.html)escolhe casos com base em seus valores.
+
+    -   [`slice()`](https://dplyr.tidyverse.org/reference/slice.html) escolhe linhas.
+
+    -   [`summarise()`](https://dplyr.tidyverse.org/reference/summarise.html)reduz vários valores a um único resumo.
+
+    -   [`arrange()`](https://dplyr.tidyverse.org/reference/arrange.html)altera a ordem das linhas.
+
+-   Tudo isto se combina naturalmente com [`group_by()`](https://dplyr.tidyverse.org/reference/group_by.html), que permite realizar qualquer operação "por grupo"
+
+-   Para aplicar essas funções, vamos simular a quantidade de casos de degue registrado no estado do Amazonas
+
+```{r}
+dados_am = readRDS("../dados/dados_am") %>% as_tibble()
+dados_am$n_dengue = c(rpois(30,1500),rpois(32,2500))
+dados_am
+```
+
+## Realocando
+
+```{r}
+dados_am %>% relocate(GEOCODIGO,NOME,n_dengue) # realocando Colunas
+```
+
+## Selecionando
+
+```{r}
+dados_am %>% select(NOME,n_dengue) # selecionando Colunas
+dados_am %>% select(NOME:MICROREGIA) 
+dados_am %>% select(1:3)
+dados_am %>% select(-GEOCODIGO)
+```
+
+## Ordenando
+
+```{r}
+dados_am %>% arrange(NOME) # ordenando 
+dados_am_select = dados_am %>% arrange(NOME) %>% relocate(NOME,n_dengue)# ordenando
+```
+
+## Filtro
+
+```{r}
+dados_am_select %>% filter(n_dengue>1500) # filtro
+```
+
+```{r}
+dados_am_select %>% filter(n_dengue>1500 & MESOREGIAO=="NORTE AMAZONENSE") #e
+```
+
+```{r}
+dados_am_select %>% filter(n_dengue>1500 | MESOREGIAO=="NORTE AMAZONENSE") # ou
+dados_am %>% slice(1:3) # selecionando as 3 primeiras linhas
+```
+
+## Modificando
+
+```{r}
+dados_tx = dados_am_select %>% mutate(
+  total_pop_municipio = c(rpois(30, 10000), rpois(32, 20000)),
+  # simulando a pop total por município
+  Taxa = (n_dengue / total_pop_municipio) * 1000
+)
+dados_tx
+```
+
+## Resumindo
+
+```{r}
+dados_tx %>% summarise(media_tx_am = mean(Taxa))
+```
+
+```{r}
+dados_tx %>% group_by(MESOREGIAO) %>% 
+  summarise(media = mean(Taxa),
+            variancia = var(Taxa),
+            n = length(Taxa)) %>%
+  arrange(n) %>%
+  relocate(MESOREGIAO,n)
+```
+
+## Outras funcionalidades
+
+### `across` 
+
+-   Aplicar uma função em várias colunas
+
+```{r}
+dados_am = readRDS("../dados/dados_am") %>% as_tibble()
+dados_am = dados_am %>%
+  mutate(n_dengue = c(rpois(30, 1500), rpois(32, 2500)),
+         n_malaria = c(rpois(30,2000),rpois(32,5000)),
+         n_covid = c(rpois(30,1000),rpois(32,2000))
+         ) %>% 
+  relocate(n_dengue,n_malaria,n_covid)
+dados_am
+
+```
+
+```{r}
+dados_am %>% summarise(across(
+  .cols = c(n_dengue, n_malaria, n_covid),
+  .fns = mean,
+  na.rm = T
+))
+```
+
+```{r}
+dados_am %>% group_by(MESOREGIAO) %>%
+  summarise(across(
+    .cols = c(n_dengue, n_malaria, n_covid),
+    .fns = mean,
+    na.rm = T
+  ))
+```
+
+### `where`
+
+-   No exemplo abaixo, calculamos a média das colunas do tipo inteiro.
+
+```{r}
+dados_am %>% group_by(MESOREGIAO) %>%
+  summarise(across(where(is.integer),
+                   .fns = mean,
+                   na.rm = T)
+            )
+```
+
+### `rename` 
+
+-   Renomear colunas
+
+```{r}
+dados_am %>% rename(CIDADE = NOME)
+```
+
+-   Renomer várias colunas a partir de uma função.
+
+-   No exemplo a seguir vamos colocar em capslk os nomes das colunas que contém a string "n\_"
+
+```{r}
+dados_am %>%
+  rename_with(toupper,contains("n_")) 
+
+```
+
+# Referências
+
+-   [Ciência de Dados em R](https://livro.curso-r.com/index.html)
+
+-   [Tidyverse](https://www.tidyverse.org/packages/#installation-and-use)
