@@ -5,6 +5,7 @@ editor: visual
 ---
 
 # Pacotes
+
 ```{r}
 #| message: false
 require(tidyverse)
@@ -13,6 +14,7 @@ require(mgcv) # modelo gam
 ```
 
 # Quadro 1: Exploração inicial dos dados
+
 ```{r}
 data(co2) # carregando
 dplyr::glimpse(co2)
@@ -21,7 +23,8 @@ co2
 
 # Quadro 2: Organização e estatísticas básicas
 
-4. Como transformar o objeto `co2` em um data.frame com colunas para concentração, tempo, mês e ano?  
+4.  Como transformar o objeto `co2` em um data.frame com colunas para concentração, tempo, mês e ano?\
+
 ```{r}
 
 df <- data.frame(
@@ -32,34 +35,65 @@ df <- data.frame(
 
 ```
 
-5. Qual a média geral da concentração de CO₂?  
+5.  Qual a média geral da concentração de CO₂?
 
 ```{r}
+mean(co2)
 
 ```
 
-6. Qual a média da concentração de CO₂ por mês? 
+6.  Qual a média da concentração de CO₂ por mês?
 
 ```{r}
-
+media_mensal <- aggregate(co2 ~ mes, data = df, FUN = mean)
+media_mensal
 ```
 
-7. Qual o desvio padrão da concentração de CO₂ por mês? 
+7.  Qual o desvio padrão da concentração de CO₂ por mês?
 
 ```{r}
+dp_mensal <- aggregate(co2 ~ mes, data = df, FUN = sd)
+
+dp_mensal$mes <- month.name[dp_mensal$mes]
+dp_mensal <- dp_mensal[order(dp_mensal$mes), ]
+
+dp_mensal
 
 ```
-
 
 # Quadro 3: Visualização dos dados
 
-8. Criar um gráfico de linha da concentração de CO₂ ao longo do tempo  
-9. Fazer um boxplot da concentração de CO₂ para cada mês  
-10. Construir um histograma da concentração total de CO₂?  
+8.  Criar um gráfico de linha da concentração de CO₂ ao longo do tempo\
+```{r}
+data(co2)
+
+# Gráfico de linha
+plot(co2,
+     type = "l",                   
+     col = "red",           
+     lwd = 2,                      
+     main = "Concentração de CO₂ ao Longo do Tempo",
+     xlab = "Ano",
+     ylab = "Concentração de CO₂ (ppm)")
+
+```
+
+9.  Fazer um boxplot da concentração de CO₂ para cada mês\
+```{r}
+boxplot(co2 ~ mes, data = df,
+        main = "Boxplot da Concentração de CO₂ por Mês",
+        xlab = "Mês",
+        ylab = "Concentração de CO₂ (ppm)",
+        col = "skyblue")
+
+df$nome_mes <- month.name[df$mes]
+```
+
+10. Construir um histograma da concentração total de CO₂?
 
 # Quadro 4: Análise de tendência temporal
 
-11. Calcular e plotar a média anual da concentração de CO₂  
-12. Você observa alguma tendência crescente na concentração anual de CO₂?  
+11. Calcular e plotar a média anual da concentração de CO₂\
+12. Você observa alguma tendência crescente na concentração anual de CO₂?
 
 # Quadro 5: Ajuste um modelo
