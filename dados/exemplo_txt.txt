@@ -1,3 +1,0 @@
-"Pessoa" "Idade"
-"1" "Leo" 30
-"2" "Lennon" 29
